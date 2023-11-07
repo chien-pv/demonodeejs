@@ -4,13 +4,18 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
+        <script src="/js/jquery-3.7.1.js"></script>
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <script src="/js/bootstrap.js"></script>
         <link rel="stylesheet" href="/css/index.css">
     </head>
     <body>
         <h1>Login Page</h1>
-        <form method="post" action="/login">
+
+        <form method="post" action="/login" enctype="multipart/form-data">
+            <input type="file" onchange="readURL(this);" name="avatar" multiple /><br>
+            <img id="avatarshow" src="#" /> <br>
+
             <label for="fname">First name:</label><br>
             <input type="text" id="fname" name="fname" value="John"><br>
             <label for="lname">Last name:</label><br>
@@ -18,4 +23,16 @@
             <input type="submit" value="Submit">
         </form>
     </body>
+    <script>
+        function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+            $('#avatarshow').attr('src', e.target.result).height(200);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+        }
+    </script>
 </html>
