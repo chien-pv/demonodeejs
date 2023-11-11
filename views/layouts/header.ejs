@@ -3,11 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <% if(title) { %>
-        <title> <%= title %> </title>
-        <% }else {%>
+
         <title> Home page </title>
-        <% }%>
         <script src="/js/jquery-3.7.1.js"></script>
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <script src="/js/bootstrap.js"></script>
@@ -58,9 +55,11 @@
                                     aria-disabled="true">Disabled</a>
                             </li>
                         </ul>
-                        <form class="d-flex" role="search">
-                            <input class="form-control me-2" type="search"
-                                placeholder="Search" aria-label="Search">
+                        <form class="d-flex" role="search" method="get">
+                            <input name="q" class="form-control me-2"
+                                type="search"
+                                placeholder="Search" aria-label="Search"
+                                value="<%=q%>"">
                             <button class="btn btn-outline-success"
                                 type="submit">Search</button>
                         </form>
