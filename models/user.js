@@ -1,28 +1,27 @@
 var db = require("../db");
 
 class User {
-  handler(resolve, reject) {
-    return function (error, result) {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(result);
-    };
+  handlerQuery(sql) {
+    return new Promise((resolve, reject) => {
+      let handler = function (error, result) {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(result);
+      };
+      db.query(sql, handler);
+    });
   }
 
   async getAll() {
     var sql = `SELECT * FROM users`;
-    return new Promise((resolve, reject) => {
-      db.query(sql, this.handler(resolve, reject));
-    });
+    return this.handlerQuery(sql);
   }
 
   async getUserByParams(q) {
     var sql = `SELECT * FROM users WHERE firstname LIKE '%${q}%' OR lastname LIKE '%${q}%' OR email LIKE '%${q}%'`;
-    return new Promise((resolve, reject) => {
-      db.query(sql, this.handler(resolve, reject));
-    });
+    return this.handlerQuery(sql);
   }
 }
 
