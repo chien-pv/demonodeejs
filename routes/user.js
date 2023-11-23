@@ -3,8 +3,9 @@ var router = express.Router();
 let UserController = require("../controllers/users_controller");
 
 router.get("/", UserController.index);
-router.get("/new", UserController.new);
-router.get("/delete/:id", UserController.delete);
-router.post("/create", UserController.create);
+router.get("/:id", UserController.show);
+router.delete("/:id", UserController.delete);
+router.post("/", UserController.create);
+router.put("/:id", UserController.create);
 
 module.exports = router;

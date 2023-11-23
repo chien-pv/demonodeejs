@@ -1,24 +1,22 @@
 const { DataTypes } = require("sequelize");
 
 let sequelize = require("../db_sequelize");
-const Product = require("./product");
 
-const User = sequelize.define(
-  "User",
+const Product = sequelize.define(
+  "Product",
   {
-    firstname: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lastname: {
+    description: {
       type: DataTypes.STRING,
     },
-    email: {
-      type: DataTypes.STRING,
+    userId: {
+      type: DataTypes.NUMBER,
     },
     createdAt: {
       type: DataTypes.DATE,
-      // allowNull defaults to true
     },
     updatedAt: {
       type: DataTypes.DATE,
@@ -29,7 +27,4 @@ const User = sequelize.define(
   }
 );
 
-User.hasMany(Product);
-Product.belongsTo(User);
-
-module.exports = User;
+module.exports = Product;

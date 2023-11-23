@@ -1,41 +1,64 @@
-var db = require("../db");
-let userModel = require("../models/user");
+const Product = require("../models/product");
+let User = require("../models/user");
+const { Op } = require("sequelize");
+
 class UserController {
   async index(req, res) {
     let q = req.query.q;
-    let results;
+    let users;
     if (q) {
-      results = await userModel.getUserByParams(q).catch(console.log);
+      users = await User.findAll({
+        attributes: ["id", "firstname", "lastname", "email"],
+        where: {
+          [Op.or]: [
+            { firstname: { [Op.like]: `%${q}%` } },
+            { lastname: { [Op.like]: `%${q}%` } },
+            { email: { [Op.like]: `%${q}%` } },
+          ],
+        },
+      });
     } else {
-      results = await userModel.getAll().catch(console.log);
+      users = await User.findAll({
+        attributes: ["id", "firstname", "lastname", "email"],
+      });
+      console.log(users);
       q = "";
     }
-    console.log(results);
-    res.render("users/index", { users: results, q });
+
+    // res.render("users/index", { users, q });
+    res.status(200).json({ message: "Get du lieu thanh cong", datas: users });
   }
 
-  new(req, res) {
-    res.render("users/create", { q: "" });
+  async show(req, res) {
+    let user_id = req.params.id;
+    let user = await User.findByPk(user_id);
+    let products = await user.getProducts();
+    console.log(products[0]);
+    res.status(200).json({ message: "Get dữ liệu thành công", data: user });
   }
 
-  delete(req, res) {
+  async delete(req, res) {
     let id = req.params.id;
-    db.query("DELETE FROM users WHERE id=?", id, function (err, result) {
-      if (err) throw err;
-      console.log(result);
-    });
-    res.redirect("/user");
+
+    let user = await User.findByPk(id);
+    if (user) {
+      let result = await User.destroy({
+        where: {
+          id: id,
+        },
+      });
+      res.status(200).json({ message: "Xoa thanh cong", datas: user });
+    } else {
+      res.status(404).json({ message: "Khong tim thay user" });
+    }
   }
 
-  create(req, res) {
-    console.log(req.body);
+  async create(req, res) {
     let person = req.body;
-    db.query("insert into users SET ?", person, function (err, result) {
-      if (err) throw err;
-      console.log(result);
-    });
-
-    res.redirect("/user");
+    let result = await User.create(person);
+    console.log(result);
+    // res.redirect("/user");
+    res.status(201).json({ message: "Tao thanh cong", datas: result });
   }
 }
 

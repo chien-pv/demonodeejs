@@ -16,9 +16,18 @@ app.use("/", express.static("./node_modules/bootstrap/dist/"));
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 
 app.use("/", root_routes);
-app.use("/user", user_routes);
+app.use("/v1/users", user_routes);
 app.use("/product", product_routes);
 
 app.listen(port, () => {
