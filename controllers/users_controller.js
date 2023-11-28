@@ -60,6 +60,31 @@ class UserController {
     // res.redirect("/user");
     res.status(201).json({ message: "Tao thanh cong", datas: result });
   }
+
+  async indexServer(req, res) {
+    let q = req.query.q;
+    let users;
+    if (q) {
+      users = await User.findAll({
+        attributes: ["id", "firstname", "lastname", "email"],
+        where: {
+          [Op.or]: [
+            { firstname: { [Op.like]: `%${q}%` } },
+            { lastname: { [Op.like]: `%${q}%` } },
+            { email: { [Op.like]: `%${q}%` } },
+          ],
+        },
+      });
+    } else {
+      users = await User.findAll({
+        attributes: ["id", "firstname", "lastname", "email"],
+      });
+      console.log(users);
+      q = "";
+    }
+
+    res.render("users/index", { users, q });
+  }
 }
 
 module.exports = new UserController();

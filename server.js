@@ -1,10 +1,19 @@
 const express = require("express");
 var bodyParser = require("body-parser");
 const app = express();
+const session = require("express-session");
 const port = 3000;
 const root_routes = require("./routes/root");
 const user_routes = require("./routes/user");
 const product_routes = require("./routes/product");
+
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 app.set("views", "./views"); // specify the views directory
 app.set("view engine", "ejs"); // register the template engine
