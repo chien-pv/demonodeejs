@@ -1,3 +1,5 @@
+var jwt = require("jsonwebtoken");
+
 let User = require("../models/user");
 const { Op } = require("sequelize");
 var bcrypt = require("bcryptjs");
@@ -10,6 +12,7 @@ function home(req, res) {
 function login(req, res) {
   res.render("login", { title: "Home", q: "" });
 }
+
 async function loginPost(req, res) {
   console.log(req.body);
 
@@ -46,4 +49,27 @@ async function resgiterPost(req, res) {
   }
 }
 
-module.exports = { home, resgiter, resgiterPost, login, loginPost };
+async function loginAPI(req, res) {
+  console.log(req.body);
+
+  const user = await User.findOne({ where: { email: req.body.email } });
+  if (user === null) {
+    res.status(404).json({ message: "Tai khoan khong ton tai!" });
+  } else {
+    console.log(user);
+    let check = bcrypt.compareSync(req.body.password, user.password);
+    if (!check) {
+      res.status(404).json({ message: "Tai khoan khong ton tai!" });
+    } else {
+      let payload = {
+        name: user.name,
+        email: user.email,
+      };
+
+      let token = jwt.sign(payload, "FptPolyTechnic", { expiresIn: 3600 });
+      res.status(200).json({ message: "Login thanh cong", token: token });
+    }
+  }
+}
+
+module.exports = { home, resgiter, resgiterPost, login, loginPost, loginAPI };
